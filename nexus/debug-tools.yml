@@ -1,0 +1,48 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: debug-tools
+  labels:
+    app: debug-tools
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app: debug-tools
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: debug-tools
+    spec:
+      containers:
+        - resources:
+            limits:
+              cpu: 200m
+              memory: 2Gi
+            requests:
+              cpu: 100m
+              memory: 1Gi
+          terminationMessagePath: /dev/termination-log
+          name: debug-tools
+          env:
+            - name: query_timeout
+              value: 500000m
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          imagePullPolicy: Always
+          image: 'grafana/grafana:latest'
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
