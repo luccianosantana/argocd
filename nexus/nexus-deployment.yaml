@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: nexus
 spec:
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app: nexus
